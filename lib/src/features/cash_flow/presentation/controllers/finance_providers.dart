@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:maluk/src/common/models/finance_models.dart';
+import 'package:maluk/src/features/cash_flow/domain/finance_models.dart';
 
 part 'finance_providers.g.dart';
 
@@ -20,8 +20,8 @@ final _defaultFinanceData = MonthlyFinanceData(
     ),
     const SpecialTransaction(
       name: 'Yearly Travel',
-      amount: 2000.0,
-      month: 6, // July (0-indexed)
+      amount: 1750.0,
+      month: 8, // July (0-indexed)
       isIncome: false,
     ),
   ],

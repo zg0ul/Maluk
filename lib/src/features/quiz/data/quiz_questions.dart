@@ -1,10 +1,7 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:maluk/src/common/models/finance_models.dart';
+import 'package:maluk/src/features/quiz/domain/quiz_models.dart';
 
-part 'quiz_providers.g.dart';
-
-// Quiz questions with predefined questions and answers
-final List<QuizQuestion> _quizQuestions = [
+/// Shared quiz questions
+final List<QuizQuestion> quizQuestions = [
   const QuizQuestion(
     question: 'What does financial wellness mean?',
     options: [
@@ -36,51 +33,3 @@ final List<QuizQuestion> _quizQuestions = [
         'Financial wellness is a journey with clear stages. The goal is to move from one stage to the next through small actionable steps.',
   ),
 ];
-
-// Current quiz index provider
-@riverpod
-class QuizState extends _$QuizState {
-  @override
-  Map<String, dynamic> build() {
-    return {
-      'currentIndex': 0,
-      'selectedAnswer': -1,
-      'isAnswered': false,
-      'quizCompleted': false,
-    };
-  }
-
-  // Get current question
-  QuizQuestion get currentQuestion => _quizQuestions[state['currentIndex']];
-
-  // Select answer
-  void selectAnswer(int index) {
-    state = {...state, 'selectedAnswer': index, 'isAnswered': true};
-  }
-
-  // Go to next question
-  void nextQuestion() {
-    final nextIndex = state['currentIndex'] + 1;
-
-    if (nextIndex < _quizQuestions.length) {
-      state = {
-        'currentIndex': nextIndex,
-        'selectedAnswer': -1,
-        'isAnswered': false,
-        'quizCompleted': false,
-      };
-    } else {
-      state = {...state, 'quizCompleted': true};
-    }
-  }
-
-  // Reset quiz
-  void resetQuiz() {
-    state = {
-      'currentIndex': 0,
-      'selectedAnswer': -1,
-      'isAnswered': false,
-      'quizCompleted': false,
-    };
-  }
-}

@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:maluk/src/common/theme/app_theme.dart';
-import 'package:maluk/src/pages/cash_flow_page.dart';
-import 'package:maluk/src/pages/quiz_page.dart';
+import 'package:maluk/src/features/cash_flow/cash_flow_page.dart';
+import 'package:maluk/src/features/quiz/quiz_page.dart';
 import 'package:maluk/src/utilities/app_spacer.dart';
 
 class HomePage extends ConsumerWidget {
@@ -40,10 +40,13 @@ class HomePage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
 
             children: [
+              AppSpacer.height20,
               // Welcome section
               Text(
                 'Welcome to Your Financial Wellness Journey',
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 textAlign: TextAlign.center,
               ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2, end: 0),
 
