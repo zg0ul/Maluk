@@ -4,8 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:maluk/src/pages/home.dart';
 import 'package:maluk/src/common/theme/app_theme.dart';
 
-
-
 class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
@@ -15,7 +13,7 @@ class MainApp extends ConsumerWidget {
 
     // Use ScreenUtilInit to initialize ScreenUtil before MaterialApp
     return ScreenUtilInit(
-      designSize: const Size(430, 932), // iPhone 15 Pro Max screen size
+      designSize: const Size(428, 926), // iPhone 15 Pro Max screen size
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {

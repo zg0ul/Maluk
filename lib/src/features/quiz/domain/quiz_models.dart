@@ -42,13 +42,13 @@ class QuizStateModel {
     int? currentIndex,
     int? selectedAnswer,
     bool? isAnswered,
-    bool? quizCompleted,
+    bool? isQuizCompleted,
   }) {
     return QuizStateModel(
       currentIndex: currentIndex ?? this.currentIndex,
       selectedAnswer: selectedAnswer ?? this.selectedAnswer,
       isAnswered: isAnswered ?? this.isAnswered,
-      isQuizCompleted: quizCompleted ?? this.isQuizCompleted,
+      isQuizCompleted: isQuizCompleted ?? this.isQuizCompleted,
     );
   }
 }

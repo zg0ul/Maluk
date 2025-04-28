@@ -59,8 +59,23 @@ class OverviewTab extends StatelessWidget {
                         controller: incomeController,
                         decoration: InputDecoration(
                           prefixText: '\$ ',
-                          border: UnderlineInputBorder(),
                           contentPadding: EdgeInsets.all(10.r),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 0.1,
+                              color:
+                                  Theme.of(context).dividerTheme.color ??
+                                  Colors.grey,
+                            ),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 0.1,
+                              color:
+                                  Theme.of(context).dividerTheme.color ??
+                                  Colors.grey,
+                            ),
+                          ),
                         ),
                         keyboardType: TextInputType.number,
                         inputFormatters: [
@@ -114,7 +129,7 @@ class OverviewTab extends StatelessWidget {
                     ),
                   ),
                 ),
-                Divider(height: 24.h, thickness: 1),
+                Divider(height: 24.h, thickness: 0.1),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -235,7 +250,7 @@ class OverviewTab extends StatelessWidget {
                     ),
                   ],
                 ),
-                Divider(height: 24.h, thickness: 1),
+                Divider(height: 24.h, thickness: 0.1),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

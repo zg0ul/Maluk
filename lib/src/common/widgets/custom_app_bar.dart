@@ -44,7 +44,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      actionsPadding: EdgeInsets.symmetric(horizontal: 8.r),
+      actionsPadding: EdgeInsets.symmetric(horizontal: 4.r),
       leading:
           showBackButton
               ? leading ??

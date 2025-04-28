@@ -34,7 +34,7 @@ class QuizState extends _$QuizState {
         isQuizCompleted: false,
       );
     } else {
-      state = state.copyWith(quizCompleted: true);
+      state = state.copyWith(isQuizCompleted: true);
     }
   }
 

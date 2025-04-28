@@ -47,6 +47,11 @@ class AppTextTheme {
       fontWeight: FontWeight.w400,
       color: _lightTextColor,
     ),
+    labelLarge: TextStyle(
+      fontSize: 12.sp,
+      fontWeight: FontWeight.w400,
+      color: _lightTextColor,
+    ),
     labelMedium: TextStyle(
       fontSize: 11.sp,
       fontWeight: FontWeight.w300,
@@ -91,6 +96,11 @@ class AppTextTheme {
       color: _darkTextColor,
     ),
     bodySmall: TextStyle(
+      fontSize: 12.sp,
+      fontWeight: FontWeight.w400,
+      color: _darkTextColor,
+    ),
+    labelLarge: TextStyle(
       fontSize: 12.sp,
       fontWeight: FontWeight.w400,
       color: _darkTextColor,

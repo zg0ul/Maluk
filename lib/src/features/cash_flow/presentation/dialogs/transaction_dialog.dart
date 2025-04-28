@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maluk/src/features/cash_flow/domain/finance_models.dart';
 import 'package:maluk/src/utilities/app_spacer.dart';
 
-/// Dialog for adding or editing a special transaction
+/// Dialog for adding or editing a special transaction with improved UI
 class TransactionDialog extends StatefulWidget {
   final String title;
   final SpecialTransaction? initialTransaction;
@@ -27,6 +28,10 @@ class _TransactionDialogState extends State<TransactionDialog> {
 
   int _selectedMonth = 0;
   bool _isIncome = false;
+
+  // Define colors for the income/expense toggle
+  final Color _expenseColor = Colors.redAccent.shade100;
+  final Color _incomeColor = Colors.greenAccent.shade100;
 
   final List<String> _months = [
     'January',
@@ -69,125 +74,291 @@ class _TransactionDialogState extends State<TransactionDialog> {
     super.dispose();
   }
 
+  // Get appropriate icon for transaction type
+  IconData get _transactionIcon =>
+      _isIncome ? Icons.arrow_upward : Icons.arrow_downward;
+
+  // Get appropriate color for transaction type
+  Color get _transactionColor => _isIncome ? _incomeColor : _expenseColor;
+
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(widget.title, style: Theme.of(context).textTheme.titleLarge),
-      content: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Name input field
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Transaction Name',
-                  hintText: 'e.g. Bonus, Holiday Expenses',
-                ),
-                textCapitalization: TextCapitalization.words,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a transaction name';
-                  }
-                  return null;
-                },
-              ),
+    final theme = Theme.of(context);
 
-              AppSpacer.height16,
-
-              // Amount input field
-              TextFormField(
-                controller: _amountController,
-                decoration: const InputDecoration(
-                  labelText: 'Amount (\$)',
-                  hintText: 'e.g. 500',
-                  prefixText: '\$ ',
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+      elevation: 8,
+      child: Padding(
+        padding: EdgeInsets.all(20.0.r),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Header with title
+                Row(
+                  children: [
+                    Icon(_transactionIcon, color: _transactionColor),
+                    AppSpacer.width8,
+                    Expanded(
+                      child: Text(
+                        widget.title,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(context).pop(),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
                 ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
-                ],
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an amount';
-                  }
-                  if (double.tryParse(value) == null) {
-                    return 'Please enter a valid amount';
-                  }
-                  return null;
-                },
-              ),
 
-              AppSpacer.height20,
-
-              // Month dropdown
-              DropdownButtonFormField<int>(
-                value: _selectedMonth,
-                decoration: const InputDecoration(
-                  labelText: 'Month',
-                  border: OutlineInputBorder(),
-                ),
-                items: List.generate(
-                  _months.length,
-                  (index) => DropdownMenuItem(
-                    value: index,
-                    child: Text(_months[index]),
+                AppSpacer.height16,
+                // Name input field with icon
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Transaction Name',
+                    hintText: 'e.g. Bonus, Holiday Expenses',
+                    prefixIcon: const Icon(Icons.description),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
+                  textCapitalization: TextCapitalization.words,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a transaction name';
+                    }
+                    return null;
+                  },
                 ),
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => _selectedMonth = value);
-                  }
-                },
-              ),
 
-              AppSpacer.height20,
+                AppSpacer.height16,
 
-              // Income/Expense toggle
-              Row(
-                children: [
-                  Text(
-                    'Transaction Type:',
-                    style: Theme.of(context).textTheme.bodyLarge,
+                // Amount input field with icon
+                TextFormField(
+                  controller: _amountController,
+                  decoration: InputDecoration(
+                    labelText: 'Amount',
+                    hintText: 'e.g. 500',
+                    prefixIcon: const Icon(Icons.attach_money),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  AppSpacer.width16,
-                  ChoiceChip(
-                    label: const Text('Expense'),
-                    selected: !_isIncome,
-                    onSelected: (selected) {
-                      if (selected) {
-                        setState(() => _isIncome = false);
-                      }
-                    },
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
                   ),
-                  AppSpacer.width8,
-                  ChoiceChip(
-                    label: const Text('Income'),
-                    selected: _isIncome,
-                    onSelected: (selected) {
-                      if (selected) {
-                        setState(() => _isIncome = true);
-                      }
-                    },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                      RegExp(r'^\d*\.?\d{0,2}$'),
+                    ),
+                  ],
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an amount';
+                    }
+                    if (double.tryParse(value) == null) {
+                      return 'Please enter a valid amount';
+                    }
+                    return null;
+                  },
+                ),
+
+                AppSpacer.height20,
+
+                // Month dropdown with improved styling
+                DropdownButtonFormField<int>(
+                  value: _selectedMonth,
+                  decoration: InputDecoration(
+                    labelText: 'Month',
+                    prefixIcon: const Icon(Icons.calendar_month),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                ],
-              ),
-            ],
+                  borderRadius: BorderRadius.circular(12),
+                  items: List.generate(
+                    _months.length,
+                    (index) => DropdownMenuItem(
+                      value: index,
+                      child: Text(_months[index]),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() => _selectedMonth = value);
+                    }
+                  },
+                ),
+
+                AppSpacer.height20,
+
+                // Income/Expense toggle redesigned
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Transaction Type',
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () => setState(() => _isIncome = false),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  color:
+                                      !_isIncome
+                                          ? _expenseColor
+                                          : Colors.transparent,
+                                  borderRadius: const BorderRadius.horizontal(
+                                    left: Radius.circular(11),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.arrow_downward,
+                                      size: 18,
+                                      color:
+                                          !_isIncome
+                                              ? Colors.red.shade700
+                                              : Colors.grey,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'Expense',
+                                      style: TextStyle(
+                                        fontWeight:
+                                            !_isIncome
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                        color:
+                                            !_isIncome
+                                                ? Colors.red.shade700
+                                                : Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: InkWell(
+                              onTap: () => setState(() => _isIncome = true),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  color:
+                                      _isIncome
+                                          ? _incomeColor
+                                          : Colors.transparent,
+                                  borderRadius: const BorderRadius.horizontal(
+                                    right: Radius.circular(11),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.arrow_upward,
+                                      size: 18,
+                                      color:
+                                          _isIncome
+                                              ? Colors.green.shade700
+                                              : Colors.grey,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'Income',
+                                      style: TextStyle(
+                                        fontWeight:
+                                            _isIncome
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                        color:
+                                            _isIncome
+                                                ? Colors.green.shade700
+                                                : Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                AppSpacer.height24,
+
+                // Action buttons with improved styling
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                      ),
+                      child: const Text('Cancel'),
+                    ),
+                    const SizedBox(width: 12),
+                    ElevatedButton(
+                      onPressed: _saveTransaction,
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                        backgroundColor: theme.colorScheme.primary,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Save'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(onPressed: _saveTransaction, child: const Text('Save')),
-      ],
     );
   }
 
